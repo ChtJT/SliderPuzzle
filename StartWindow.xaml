@@ -5,7 +5,7 @@
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <Button Content="游戏" Width="200" Margin="5" Click="GameOptionsWindow_Click"/>
         <Button Content="设置" Width="200" Margin="5" Click="SettingsButton_Click"/>
-        <Button Content="关于" Width="200" Margin="5"/>
+        <Button Content="关于" Width="200" Margin="5" Click="AboutButton_Click"/>
         <Button Content="退出" Width="200" Margin="5" Click="ExitButton_Click"/>
     </StackPanel>
 </Window>

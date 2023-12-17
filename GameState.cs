@@ -8,7 +8,7 @@ namespace SliderPuzzleGameExtension
 {
     public class GameState
     {
-        public int DifficultyLevel { get; set; } // 难度用 0-4 表示
+        public string DifficultyLevel { get; set; }
         public List<int> Board { get; set; } // 当前棋盘布局
     }
 }

@@ -75,7 +75,7 @@ namespace SliderPuzzleGameExtension
 
             int newRow, newCol; // 在循环外声明 newRow 和 newCol
 
-            for (int moves = 0; moves < 1000; moves++) // 执行足够多次移动以打乱拼图
+            for (int moves = 0; moves < 100000; moves++) // 执行足够多次移动以打乱拼图
             {
                 List<int> possibleMoves = new List<int>();
 
@@ -108,23 +108,16 @@ namespace SliderPuzzleGameExtension
             _map.Move(e.Key);
             MapPainter.DrawMap(_map, MainGrid, _map.IsSolved());
         }
-        private int ConvertDifficultyToLevel(string difficulty)
+        private string getDifficultyLevel()
         {
-            switch (difficulty)
-            {
-                case "2x3": return 0;
-                case "3x3": return 1;
-                case "4x4": return 2;
-                case "5x5": return 3;
-                case "10x10": return 4;
-                default: return -1;
-            }
+            // NULL
+            return Difficulty;
         }
         private GameState GetCurrentGameState()
         {
             var gameState = new GameState
             {
-                DifficultyLevel = ConvertDifficultyToLevel(Difficulty),
+                DifficultyLevel = getDifficultyLevel(),
                 Board = new List<int>()
             };
 
@@ -142,7 +135,7 @@ namespace SliderPuzzleGameExtension
         private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             GameState gameState = GetCurrentGameState();
-            //GameDataHelper.SaveGameState(gameState, "D:/VS2022/SliderPuzzleGameExtension/gameSave.xml");
+            GameDataHelper.SaveGameState(gameState, "D:/VS2022/SliderPuzzleGameExtension/gameSave.xml");
         }
     }
 }

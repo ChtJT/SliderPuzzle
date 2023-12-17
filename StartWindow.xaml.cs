@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
+
 
 namespace SliderPuzzleGameExtension
 {
@@ -36,6 +38,20 @@ namespace SliderPuzzleGameExtension
             gameOptionsWindow.Closed += (s, args) => this.Show();  // 当设置窗口关闭时，重新显示 StartWindow
             gameOptionsWindow.Show();
             this.Hide();  // 隐藏当前窗口
+        }
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            string aboutContent = ReadMarkdownFile("path/to/about.md");
+            AboutWindow aboutWindow = new AboutWindow(aboutContent);
+            aboutWindow.ShowDialog();
+        }
+        private string ReadMarkdownFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                return File.ReadAllText(filePath);
+            }
+            return "关于内容未找到。";
         }
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {

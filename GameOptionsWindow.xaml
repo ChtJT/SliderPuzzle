@@ -1,0 +1,11 @@
+﻿<Window x:Class="SliderPuzzleGameExtension.GameOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="游戏选项" Height="300" Width="400">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Button Content="开始新游戏" Width="200" Margin="10" Click="StartNewGame_Click"/>
+        <Button Content="继续游戏" Width="200" Margin="10" Click="ContinueGame_Click"/>
+        <Button Content="设置难度" Width="200" Margin="10" Click="SetDifficulty_Click"/>
+        <Button Content="返回开始界面" Width="200" Margin="10" Click="ReturnButton_Click"/>
+    </StackPanel>
+</Window>

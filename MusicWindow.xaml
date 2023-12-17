@@ -1,0 +1,14 @@
+﻿<Window x:Class="SliderPuzzleGameExtension.MusicWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="设置" Height="300" Width="400">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+
+        <!-- 音乐开关 -->
+        <CheckBox x:Name="MusicToggleButton" Content="音乐开关" Margin="10" Checked="MusicToggleButton_Checked" Unchecked="MusicToggleButton_Unchecked"  IsChecked="False"/>
+        <!-- 添加一个 Slider 控件用于音量控制 -->
+        <Slider x:Name="VolumeSlider" Minimum="0" Maximum="1" Value="0.2" Orientation="Horizontal" TickFrequency="0.1" SmallChange="0.1" ValueChanged="VolumeSlider_ValueChanged" />
+
+        <Button Content="返回" Margin="10" Click="ReturnButton_Click"/>
+    </StackPanel>
+</Window>

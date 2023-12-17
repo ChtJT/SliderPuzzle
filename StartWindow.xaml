@@ -1,0 +1,11 @@
+﻿<Window x:Class="SliderPuzzleGameExtension.StartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Start Puzzle Game" Height="300" Width="400">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Button Content="游戏" Width="200" Margin="5" Click="GameOptionsWindow_Click"/>
+        <Button Content="设置" Width="200" Margin="5" Click="SettingsButton_Click"/>
+        <Button Content="关于" Width="200" Margin="5"/>
+        <Button Content="退出" Width="200" Margin="5" Click="ExitButton_Click"/>
+    </StackPanel>
+</Window>

@@ -40,7 +40,26 @@ namespace SliderPuzzleGameExtension
         }
         private void ContinueGame_Click(object sender, RoutedEventArgs e)
         {
-            // 实现继续游戏的逻辑
+            // 假设您有一个方法来获取当前选择的难度
+            string currentDifficulty = _selectedDifficulty;
+
+            // 构造 XML 文件路径
+            string filePath = "../../../gameSave.xml";
+
+            // 从 XML 文件中加载游戏状态
+            GameState gameState = GameDataHelper.LoadGameState(currentDifficulty, filePath);
+
+            if (gameState != null)
+            {
+                // 使用加载的游戏状态创建新的 GameWindow
+                GameWindow gameWindow = new GameWindow(gameState.DifficultyLevel, false);
+                gameWindow.Show();
+                // gameWindow.ApplyGameState(gameState);
+            }
+            else
+            {
+                MessageBox.Show("无法加载游戏状态。", "错误");
+            }
         }
         private void SetDifficulty_Click(object sender, RoutedEventArgs e)
         {
@@ -50,18 +69,6 @@ namespace SliderPuzzleGameExtension
                 _selectedDifficulty = difficulty; // 保存选择的难度
             };
             difficultyWindow.ShowDialog();
-        }
-        private string ConvertLevelToDifficulty(int level)
-        {
-            switch (level)
-            {
-                case 0: return "2x3";
-                case 1: return "3x3";
-                case 2: return "4x4";
-                case 3: return "5x5";
-                case 4: return "10x10";
-                default: return "unknown";
-            }
         }
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {

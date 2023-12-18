@@ -44,7 +44,7 @@ namespace SliderPuzzleGameExtension
         }
         private void MusicToggleButton_Checked(object sender, RoutedEventArgs e)
         {
-            _musicPlayer.PlayMusic("D:/VS2022/SliderPuzzleGameExtension/music.wav");
+            _musicPlayer.PlayMusic("../../../music.wav");
         }
 
         private void MusicToggleButton_Unchecked(object sender, RoutedEventArgs e)

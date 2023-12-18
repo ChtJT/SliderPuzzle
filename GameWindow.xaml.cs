@@ -14,18 +14,19 @@ namespace SliderPuzzleGameExtension
     {
         private readonly Map _map;
         //private readonly MapPainter _mapPainter;
-        public string Difficulty { get; set; }
-        public GameWindow(string difficulty)
+        private string Difficulty { get; set; }
+        public GameWindow(string difficulty, bool shuffle = true)
         {
             InitializeComponent();
             int rows, cols;
             ParseDifficulty(difficulty, out rows, out cols);
 
-            _map = new Map(CreateInitialMap(rows, cols));
+            _map = new Map(CreateInitialMap(rows, cols, shuffle));
             MapPainter.DrawMap(_map, MainGrid, _map.IsSolved());
         }
         private void ParseDifficulty(string difficulty, out int rows, out int cols)
         {
+            Difficulty = difficulty;
             switch (difficulty)
             {
                 case "2x3":
@@ -42,7 +43,7 @@ namespace SliderPuzzleGameExtension
                     throw new InvalidOperationException("未知难度");
             }
         }
-        private int[,] CreateInitialMap(int rows, int cols)
+        private int[,] CreateInitialMap(int rows, int cols ,bool shuffle)
         {
             int[,] initialMap = new int[rows, cols];
 
@@ -60,9 +61,10 @@ namespace SliderPuzzleGameExtension
                         initialMap[i, j] = 0; // 其余位置设置为0（空格）
                 }
             }
-            // 随机打乱数组
-            ShuffleMap(initialMap, rows, cols);
-
+            if (shuffle)
+            {
+                ShuffleMap(initialMap, rows, cols);
+            }
             return initialMap;
         }
         private Random _random = new Random();
@@ -110,7 +112,6 @@ namespace SliderPuzzleGameExtension
         }
         private string getDifficultyLevel()
         {
-            // NULL
             return Difficulty;
         }
         private GameState GetCurrentGameState()
@@ -135,7 +136,7 @@ namespace SliderPuzzleGameExtension
         private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             GameState gameState = GetCurrentGameState();
-            GameDataHelper.SaveGameState(gameState, "D:/VS2022/SliderPuzzleGameExtension/gameSave.xml");
+            GameDataHelper.SaveGameState(gameState, "../../../gameSave.xml");
         }
     }
 }

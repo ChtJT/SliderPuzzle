@@ -41,7 +41,7 @@ namespace SliderPuzzleGameExtension
         }
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
-            string aboutContent = ReadMarkdownFile("path/to/about.md");
+            string aboutContent = ReadMarkdownFile("../../../README.md");
             AboutWindow aboutWindow = new AboutWindow(aboutContent);
             aboutWindow.ShowDialog();
         }

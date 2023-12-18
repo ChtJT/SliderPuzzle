@@ -31,6 +31,13 @@ namespace SliderPuzzleGameExtension
         {
             GameStates gameStates = File.Exists(filePath) ? LoadGameStates(filePath) : new GameStates();
 
+            var existingState = gameStates.States.FirstOrDefault(s => s.DifficultyLevel == gameState.DifficultyLevel);
+            if(existingState != null)
+            {
+                // 如果已存在相同难度的状态，则更新该状态
+                gameStates.States.Remove(existingState);
+            }
+
             // 添加新状态
             gameStates.States.Add(gameState);
 

@@ -28,9 +28,7 @@ namespace SliderPuzzleGameExtension
         }
         private void MusicWindow_Click(object sender, RoutedEventArgs e)
         {
-            MusicWindow musicWindow = new MusicWindow();
-            musicWindow.Closed += (s, args) => this.Show();  // 当设置窗口关闭时，重新显示 StartWindow
-            musicWindow.Show();
+            MusicWindow.Instance.Show();
         }
     }
 }

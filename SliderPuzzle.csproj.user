@@ -11,6 +11,9 @@
     <Compile Update="GameOptionsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="ImageSelectionWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="MusicWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -29,6 +32,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="GameOptionsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ImageSelectionWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MusicWindow.xaml">

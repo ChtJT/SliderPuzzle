@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace SliderPuzzleGameExtension;
@@ -27,6 +29,85 @@ public class Map
                 }
             }
         if (counter != 1) throw new Exception("Invalid map");
+    }
+    public Map Clone()
+    {
+        int rows = _matrix.GetLength(0);
+        int cols = _matrix.GetLength(1);
+        int[,] newBoard = new int[rows, cols];
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < cols; col++)
+            {
+                newBoard[row, col] = _matrix[row, col];
+            }
+        }
+
+        return new Map(newBoard); // 假设 Map 类有一个接受二维数组的构造函数
+    }
+    public bool IsGoal(Map goal)
+    {
+        for (int i = 0; i < _matrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < _matrix.GetLength(1); j++)
+            {
+                if (_matrix[i, j] != goal._matrix[i, j])
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public List<Map> GetNeighbors()
+    {
+        List<Map> neighbors = new List<Map>();
+        // 找到空白格的位置
+        (int row, int col) = FindBlankSpace();
+
+        // 尝试移动：上，下，左，右
+        int[] dx = { -1, 1, 0, 0 };
+        int[] dy = { 0, 0, -1, 1 };
+
+        for (int i = 0; i < 4; i++)
+        {
+            int newRow = row + dx[i];
+            int newCol = col + dy[i];
+
+            if (IsValidMove(newRow, newCol))
+            {
+                // 生成新的地图状态
+                Map newMap = Clone();
+                newMap.Swap(row, col, newRow, newCol);
+                neighbors.Add(newMap);
+            }
+        }
+
+        return neighbors;
+    }
+    private (int, int) FindBlankSpace()
+    {
+        for (int row = 0; row < _matrix.GetLength(0); row++)
+        {
+            for (int col = 0; col < _matrix.GetLength(1); col++)
+            {
+                if (_matrix[row, col] == 0) // 假设空白格用 0 表示
+                {
+                    return (row, col);
+                }
+            }
+        }
+        throw new InvalidOperationException("No blank space found in the map.");
+    }
+    private bool IsValidMove(int row, int col)
+    {
+        return row >= 0 && row < _matrix.GetLength(0) && col >= 0 && col < _matrix.GetLength(1);
+    }
+    private void Swap(int row1, int col1, int row2, int col2)
+    {
+        int temp = _matrix[row1, col1];
+        _matrix[row1, col1] = _matrix[row2, col2];
+        _matrix[row2, col2] = temp;
     }
 
     public int ColCount => _matrix.GetLength(1);

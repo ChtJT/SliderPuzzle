@@ -1,11 +1,23 @@
 ﻿<Window x:Class="SliderPuzzleGameExtension.StartWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Start Puzzle Game" Height="300" Width="400">
-    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Button Content="游戏" Width="200" Margin="5" Click="GameOptionsWindow_Click"/>
-        <Button Content="设置" Width="200" Margin="5" Click="SettingsButton_Click"/>
-        <Button Content="关于" Width="200" Margin="5" Click="AboutButton_Click"/>
-        <Button Content="退出" Width="200" Margin="5" Click="ExitButton_Click"/>
-    </StackPanel>
+        Title="Start Puzzle Game" Height="600" Width="800"
+        Loaded="Window_Loaded">
+    <Grid>
+        <!-- 视频背景 -->
+        <MediaElement x:Name="VideoBackground"
+                      Source="../../../media.mp4"
+                      LoadedBehavior="Manual"
+                      UnloadedBehavior="Manual"
+                      Stretch="Fill"
+                      MediaEnded="OnMediaEnded"/>
+
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <!-- 您的按钮 -->
+            <Button Content="游戏" Width="200" Margin="5" Click="GameOptionsWindow_Click"/>
+            <Button Content="设置" Width="200" Margin="5" Click="SettingsButton_Click"/>
+            <Button Content="关于" Width="200" Margin="5" Click="AboutButton_Click"/>
+            <Button Content="退出" Width="200" Margin="5" Click="ExitButton_Click"/>
+        </StackPanel>
+    </Grid>
 </Window>

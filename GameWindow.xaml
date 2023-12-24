@@ -4,7 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="GameWindow" Height="300" Width="500" KeyDown="MainGrid_KeyDown"
-        Closing="GameWindow_Closing">
-    <Grid x:Name="MainGrid" />
+        Title="GameWindow" Height="320" Width="500" KeyDown="MainGrid_KeyDown" Closed="GameWindow_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- 游戏区域 -->
+            <RowDefinition Height="20" />
+            <!-- 按钮区域 -->
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="MainGrid" Grid.Row="0">
+            <!-- 游戏内容 -->
+        </Grid>
+
+        <Button Content="求助" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Click="HelpButton_Click"/>
+    </Grid>
 </Window>

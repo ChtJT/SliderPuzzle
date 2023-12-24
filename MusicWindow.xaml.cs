@@ -26,30 +26,51 @@ namespace SliderPuzzleGameExtension
     public partial class MusicWindow : Window
     {
         private MusicPlayer _musicPlayer;
+        private static MusicWindow _instance;
         public MusicWindow()
         {
             InitializeComponent();
             _musicPlayer = MusicPlayer.Instance;
-
-            // 暂时解除事件处理程序的绑定
-            MusicToggleButton.Checked -= MusicToggleButton_Checked;
-            MusicToggleButton.Unchecked -= MusicToggleButton_Unchecked;
-
             // 设置播放开关的状态
             MusicToggleButton.IsChecked = _musicPlayer.IsPlaying;
-
-            // 重新绑定事件处理程序
-            MusicToggleButton.Checked += MusicToggleButton_Checked;
-            MusicToggleButton.Unchecked += MusicToggleButton_Unchecked;
+        }
+        public static MusicWindow Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new MusicWindow();
+                }
+                return _instance;
+            }
         }
         private void MusicToggleButton_Checked(object sender, RoutedEventArgs e)
         {
             _musicPlayer.PlayMusic("../../../music.wav");
+            // 减小或静音视频背景的声音
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var mainWindow = Application.Current.MainWindow as StartWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.VideoBackground.Volume = 0;
+                }
+            });
         }
 
         private void MusicToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             _musicPlayer.StopMusic();
+            // 恢复视频背景的声音
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var mainWindow = Application.Current.MainWindow as StartWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.VideoBackground.Volume = 1; // 或者设置为原来的音量
+                }
+            });
         }
 
         private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -62,7 +83,15 @@ namespace SliderPuzzleGameExtension
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            this.Hide();
+        }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            // 取消关闭事件并隐藏窗口
+            e.Cancel = true;
+            this.Hide();
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -8,7 +9,7 @@ namespace SliderPuzzleGameExtension;
 
 public static class MapPainter
 {
-    public static void DrawMap(Map map, Grid grid, bool isSolved)
+    public static void DrawMap(Map map, Grid grid, bool isSolved, string imagePath)
     {
         grid.RowDefinitions.Clear();
         grid.ColumnDefinitions.Clear();
@@ -17,7 +18,11 @@ public static class MapPainter
         var brush = new SolidColorBrush(Color.FromRgb(127, 127, 0));
         if (isSolved) brush = new SolidColorBrush(Color.FromRgb(0, 127, 0));
 
-        var bitmap = new BitmapImage(new Uri("fallbackWallpaper.png", UriKind.Relative));
+        if (!File.Exists(imagePath))
+        {
+            throw new FileNotFoundException($"File not found: {imagePath}");
+        }
+        var bitmap = new BitmapImage(new Uri(imagePath, UriKind.RelativeOrAbsolute));
         var width = bitmap.PixelWidth / map.ColCount;
         var height = bitmap.PixelHeight / map.RowCount;
 

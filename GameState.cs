@@ -9,6 +9,7 @@ namespace SliderPuzzleGameExtension
     public class GameState
     {
         public string DifficultyLevel { get; set; }
+        public string ImagePath { get; set; }
         public List<int> Board { get; set; } // 当前棋盘布局
     }
 }

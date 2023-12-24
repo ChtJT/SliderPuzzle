@@ -13,16 +13,205 @@ namespace SliderPuzzleGameExtension
     public partial class GameWindow : Window
     {
         private readonly Map _map;
+        private string _imagePath;
         //private readonly MapPainter _mapPainter;
         private string Difficulty { get; set; }
-        public GameWindow(string difficulty, bool shuffle = true)
+        public GameWindow(string difficulty)
+        {
+            InitializeComponent();
+            Difficulty = difficulty;
+            int rows, cols;
+            ParseDifficulty(difficulty, out rows, out cols);
+
+            _map = new Map(CreateInitialMap(rows, cols));
+            _imagePath = "D:/VS2022/SliderPuzzle/image/1.png";
+            MapPainter.DrawMap(_map, MainGrid, _map.IsSolved(), _imagePath);
+        }
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 这里需要根据你的实际游戏逻辑创建当前状态和目标状态
+            Map currentState = GetCurrentState();
+            Map goalState = GetGoalState();
+
+            var path = AStarSearch(currentState, goalState);
+            if (path != null && path.Count > 1)
+            {
+                Map nextStep = path[0];
+                // 显示下一步提示
+                ShowNextStep(nextStep);
+            }
+            else
+            {
+                MessageBox.Show("没有可用的移动。");
+            }
+        }
+        private Map GetGoalState()
+        {
+            int[,] goalBoard = new int[_map.RowCount, _map.ColCount];
+
+            int num = 1;
+            for (int row = 0; row < _map.RowCount; row++)
+            {
+                for (int col = 0; col < _map.ColCount; col++)
+                {
+                    goalBoard[row, col] = num;
+                    num++;
+                }
+            }
+            goalBoard[_map.RowCount - 1, _map.ColCount - 1] = 0; // 最后一个位置为空白
+
+            return new Map(goalBoard);
+        }
+        private void ShowNextStep(Map nextStep)
+        {
+            var currentMap = _map.GetCurrentMap();
+            var nextMap = nextStep.GetCurrentMap();
+
+            (int currentRow, int currentCol) = FindBlankSpace(currentMap);
+            (int nextRow, int nextCol) = FindBlankSpace(nextMap);
+
+            // 判断空白格移动的方向
+            string moveDirection = "";
+            if (currentRow == nextRow)
+            {
+                if (currentCol - nextCol == 1)
+                    moveDirection = "向左移动";
+                else if (currentCol - nextCol == -1)
+                    moveDirection = "向右移动";
+            }
+            else if (currentCol == nextCol)
+            {
+                if (currentRow - nextRow == 1)
+                    moveDirection = "向上移动";
+                else if (currentRow - nextRow == -1)
+                    moveDirection = "向下移动";
+            }
+            MessageBox.Show($"下一步提示: {moveDirection}");
+        }
+        private (int, int) FindBlankSpace(int[,] map)
+        {
+            for (int row = 0; row < map.GetLength(0); row++)
+            {
+                for (int col = 0; col < map.GetLength(1); col++)
+                {
+                    if (map[row, col] == 0)
+                    {
+                        return (row, col);
+                    }
+                }
+            }
+            throw new InvalidOperationException("No blank space found in the map.");
+        }
+        public List<Map> AStarSearch(Map start, Map goal)
+        {
+            var openSet = new PriorityQueue<Map, int>();
+            var cameFrom = new Dictionary<Map, Map>();
+            var costSoFar = new Dictionary<Map, int>();
+
+            openSet.Enqueue(start, 0);
+            cameFrom[start] = null;
+            costSoFar[start] = 0;
+
+            while (openSet.Count > 0)
+            {
+                var current = openSet.Dequeue();
+
+                if (current.IsGoal(goal))
+                {
+                    return ReconstructPath(cameFrom, start, current);
+                }
+
+                foreach (var next in current.GetNeighbors())
+                {
+                    int newCost = costSoFar[current] + 1; // 假设每一步的成本为 1
+                    if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
+                    {
+                        costSoFar[next] = newCost;
+                        int priority = newCost + Heuristic(next, goal);
+                        if (!cameFrom.ContainsKey(next)) // 防止重复添加
+                        {
+                            openSet.Enqueue(next, priority);
+                            cameFrom[next] = current;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        private Map GetCurrentState()
+        {
+            // 假设 GameState 类有一个接受 Map 对象的构造函数
+            return _map.Clone();
+        }
+
+        public int Heuristic(Map state, Map goal)
+        {
+            int distance = 0;
+            for (int row = 0; row < state.RowCount; row++)
+            {
+                for (int col = 0; col < state.ColCount; col++)
+                {
+                    int value = state[row, col];
+                    if (value != 0)
+                    {
+                        var (goalRow, goalCol) = FindPosition(value, goal);
+                        distance += Math.Abs(row - goalRow) + Math.Abs(col - goalCol);
+                    }
+                }
+            }
+            return distance;
+        }
+        private (int, int) FindPosition(int value, Map board)
+        {
+            for (int row = 0; row < board.RowCount; row++)
+            {
+                for (int col = 0; col < board.ColCount; col++)
+                {
+                    if (board[row, col] == value)
+                        return (row, col);
+                }
+            }
+            return (-1, -1); // 不应该发生，如果发生则表示错误
+        }
+        private List<Map> ReconstructPath(Dictionary<Map, Map> cameFrom, Map start, Map goal)
+        {
+            List<Map> path = new List<Map>();
+            var current = goal;
+            while (current != start)
+            {
+                path.Add(current);
+                current = cameFrom[current];
+            }
+            path.Reverse();
+            return path;
+        }
+        public string ImagePath
+        {
+            get { return _imagePath; }
+            set
+            {
+                _imagePath = value;
+                // 当图片路径被设置时，重新绘制地图
+                if (_map != null)
+                {
+                    MapPainter.DrawMap(_map, MainGrid, _map.IsSolved(), _imagePath);
+                }
+            }
+        }
+
+        public GameWindow(string difficulty, string imagePath, int[,] boardState)
         {
             InitializeComponent();
             int rows, cols;
             ParseDifficulty(difficulty, out rows, out cols);
+            // 确保传入的棋盘状态与难度匹配
+            if (boardState.GetLength(0) != rows || boardState.GetLength(1) != cols)
+            {
+                throw new ArgumentException("The board state does not match the specified difficulty.");
+            }
 
-            _map = new Map(CreateInitialMap(rows, cols, shuffle));
-            MapPainter.DrawMap(_map, MainGrid, _map.IsSolved());
+            _map = new Map(boardState);
+            MapPainter.DrawMap(_map, MainGrid, _map.IsSolved(), imagePath);
         }
         private void ParseDifficulty(string difficulty, out int rows, out int cols)
         {
@@ -43,7 +232,7 @@ namespace SliderPuzzleGameExtension
                     throw new InvalidOperationException("未知难度");
             }
         }
-        private int[,] CreateInitialMap(int rows, int cols ,bool shuffle)
+        private int[,] CreateInitialMap(int rows, int cols)
         {
             int[,] initialMap = new int[rows, cols];
 
@@ -61,10 +250,7 @@ namespace SliderPuzzleGameExtension
                         initialMap[i, j] = 0; // 其余位置设置为0（空格）
                 }
             }
-            if (shuffle)
-            {
                 ShuffleMap(initialMap, rows, cols);
-            }
             return initialMap;
         }
         private Random _random = new Random();
@@ -108,7 +294,7 @@ namespace SliderPuzzleGameExtension
         {
             if (e.Key is not (Key.Up or Key.Down or Key.Left or Key.Right)) return;
             _map.Move(e.Key);
-            MapPainter.DrawMap(_map, MainGrid, _map.IsSolved());
+            MapPainter.DrawMap(_map, MainGrid, _map.IsSolved(), _imagePath);
         }
         private string getDifficultyLevel()
         {
@@ -119,6 +305,7 @@ namespace SliderPuzzleGameExtension
             var gameState = new GameState
             {
                 DifficultyLevel = getDifficultyLevel(),
+                ImagePath = getCurrentImagePath(),
                 Board = new List<int>()
             };
 
@@ -133,10 +320,14 @@ namespace SliderPuzzleGameExtension
 
             return gameState;
         }
-        private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private string getCurrentImagePath()
+        {
+            return ImagePath;
+        }
+        private void GameWindow_Closing(object sender, EventArgs e)
         {
             GameState gameState = GetCurrentGameState();
-            GameDataHelper.SaveGameState(gameState, "../../../gameSave.xml");
+            GameDataHelper.SaveGameState(gameState, "D:/VS2022/SliderPuzzle/gameSave.xml");
         }
     }
 }
